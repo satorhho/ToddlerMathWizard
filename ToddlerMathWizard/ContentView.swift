@@ -45,17 +45,26 @@ struct ContentView: View {
     @State private var multiple: Int = 1
     
     // Question State(s)
-    var multiple_answers: [Int] {
-        var answers = [Int]()
-        
-        for i in (1...10){
-            answers.append(i * (self.multiple + 1))
+    @State private var multiple_answers = [69, 69, 69]  // automatically shuffled
+    /*
+    var answer_modifier: [Int] {
+        get {
+            return self.multiple_answers
         }
-        
-        return answers
+        set(multipleOf){
+            var store = [Int]()
+            
+            for i in 1...10{
+                store.append(i)
+            }
+            
+            return multiple_answers = store.shuffled()
+        }
     }
+    */
     // self.multiple also functions as X
-    @State private var Y: Int = Int.random(in: 0...10)
+    @State private var Y: Int = Int.random(in: 0...10)  // answer is self.multiple_answers[self.Y]
+    @State private var rand: Int = Int.random(in: 0..<3)
     
     // Alert State(s)
     @State private var show_alert: Bool = true
@@ -68,8 +77,6 @@ struct ContentView: View {
     // Point State(s)
     @State private var points = 0
     
-    // chinghcong
-    @State private var boolean: Bool = false
     
     var body: some View {
         NavigationView{
@@ -105,14 +112,14 @@ struct ContentView: View {
                     
                     HStack{
                         ForEach(0..<3){ i in
+                            
                             Button(action: {
-                                //self.change_alert(title: "Hello", message: "Yayeet")
+                                self.tapped(button_value: i)
                                 withAnimation(.interpolatingSpring(stiffness: 10, damping: 4)){
                                     self.rotation_amout += 360
                                 }
-                                self.boolean.toggle()
                             }){
-                                Text("\(i)")
+                                Text("\(self.multiple_answers[i])")
                                 .padding(50)
                                 .background(LinearGradient(gradient: Gradient(colors: [.black, .gray, .white]), startPoint: .top, endPoint: .bottom))
                                 .foregroundColor(.red)
@@ -120,9 +127,7 @@ struct ContentView: View {
                                 .clipShape(Circle())
                                 
                             }
-                            //.spinDiff(rval: self.rotation_amout)
-                            //.spinButton(rval: self.rotation_amout)
-                            .decide(boolean: self.boolean, doubleValue: self.rotation_amout, opacityValue: self.rotation_amout)
+                            .spinButton(rval: self.rotation_amout)
                             
                             
                         }
@@ -135,15 +140,29 @@ struct ContentView: View {
             .navigationBarTitle("ToddlerMathWizard", displayMode: .large)
             .alert(isPresented: $show_alert){
                 Alert(title: Text(self.alert_title), message: Text(self.alert_message), dismissButton: .default(Text("Okay")))
-            }
-            
+                
+            }            
         }
     }
-    
+    func shuffle_array(multipleOf: Int = 5) -> Void {
+        var store = [Int]()
+        
+        for i in 1...10{
+            store.append(i * 5)
+        }
+        
+        self.multiple_answers = store.shuffled()
+    }
     func change_alert(title: String, message: String) -> Void {
         self.alert_title = title
         self.alert_message = message
         //self.show_alert = true
+    }
+    func ask_question() -> Void {
+        //self.multiple_answers.shuffle()
+    }
+    func tapped(button_value: Int) -> Void{
+        self.shuffle_array()
     }
 }
 
